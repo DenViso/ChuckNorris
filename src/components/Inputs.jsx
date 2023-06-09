@@ -49,7 +49,10 @@ const Inputs = ({ setJokes, setSelected, selected, type, setType }) => {
 	const getText = async (e) => {
 		e.preventDefault();
 		if (!search) {
-			return;
+			return alert ("Введіть текст запиту шутки");
+		}
+		if(search.length < 3 ){
+			return alert("Запит на шутку має містити від 2 до 120 символів");
 		}
 		const response = await getByText(search);
 		setJokes(response);
@@ -105,7 +108,7 @@ const Inputs = ({ setJokes, setSelected, selected, type, setType }) => {
 									<button
 										type="button"
 										onClick={(e) => changeCategory(e, cat)}
-										className={selected === cat ? "selected" : ""}
+										className={selected === cat ? "category-button selected-category" :"category-button" }
 										key={ind}>
 										{cat}
 									</button>

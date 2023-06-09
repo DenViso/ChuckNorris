@@ -1,26 +1,40 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Inputs from "./components/Inputs";
 import Jok from "./components/Jok";
+import JokItem from "./components/JokeItem";
 
 const App = () => {
 	const [selected, setSelected] = useState("dev");
 	const [jokes, setJokes] = useState([]);
 	const [type, setType] = useState("random"); // тип запроса
-	const [addToFav, setAddToFav] = useState(false);
 	const [favs, setFavs] = useState([]);
 
-	const addToFavHandler = () => {
-		if (!addToFav) {
-			setAddToFav(true);
-		} else {
-			setAddToFav(false);
+
+	useEffect(() => {
+		const localFavs = localStorage.getItem("favs");
+		if (localFavs) {
+			setFavs(JSON.parse(localFavs));
 		}
-	};
+	},[]);
+
+	useEffect(() => {
+		localStorage.setItem("favs", JSON.stringify(favs));
+	},[favs]);
 
 	const addFav = (jokes) => {
-		return setFavs( [...favs,jokes]);
+		if (favs.some((joke)=>{
+			 return joke.id === jokes.id
+			})) {
+			setFavs((prevFavs) =>{
+				return prevFavs.filter((fav) =>{ 
+					return fav.id !== jokes.id
+				})
+			})
+		 	}else{
+		setFavs((prevFavs) => [...prevFavs, jokes]);
+	}
 	};
-console.log(favs);
+	
 
 	return (
 		<div className="App">
@@ -34,21 +48,22 @@ console.log(favs);
 						setType={setType}
 					/>
 				</div>
-				<div>
-					<Jok
-						jokes={jokes}
-						selected={selected}
-						type={type}
-						// addToFavHandler={addToFavHandler}
-						// addToFav={addToFav}
-						addFav={addFav}
-					/>
-				</div>
+
+				<Jok jokes={jokes} favs={favs} addFav={addFav} />
 			</div>
 			<div className="favs">
 				<h2 className="favs__title">Favorites</h2>
 				<div className="jokes">
-					{favs.map((fa)=>{return(<p>{fa}</p>)})}
+					{favs.map((favJoke) => {
+						return (
+							<JokItem
+								joke={favJoke}
+								key={favJoke.id}
+								addFav={addFav}
+								favs={favs}
+							/>
+						);
+					})}
 				</div>
 			</div>
 		</div>

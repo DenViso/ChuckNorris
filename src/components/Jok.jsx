@@ -1,34 +1,13 @@
+import JokItem from "./JokeItem";
 
-
-const Jok = ({ jokes, selected, type,addToFavHandler,addToFav,addFav }) => {
-
- 
+const Jok = ({jokes, addFav,favs}) => {
 	return (
 		<div className="jokes">
 			{jokes.map((joke) => {
-				return (
-					<div className="joke-item" key = {joke.id}>
-						<a href="#"><img src="./images/mail.svg" alt="mail-icon" className="joke__mail-svg" /></a>
-
-						<span className="joke__id">ID:{joke.id}<img src="./images/link-share.svg" alt="link-share" /></span>
-
-						<button className={addToFav?"joke__btn-full": "joke__btn"} onClick={() => addFav()}> </button>
-
-
-						<p className="joke__value">{joke.value}</p>
-						{type === "selected" && <p className="joke__selected">{selected}</p>}
-						<p className="joke__updated">
-							Last update:
-							{new Date().getTime() - new Date(joke.updated_at)}
-							hours ago
-						</p>
-						
-					</div>
-				);
+				return <JokItem joke={joke} key={joke.id} addFav={addFav} favs={favs}/>
 			})}
-		
 		</div>
-	)
+	);
 };
 
 export default Jok;
